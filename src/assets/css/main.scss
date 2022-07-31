@@ -14,17 +14,49 @@ body{
     .title{
         font-size: 22px;
         font-weight: bold;
+        margin-bottom: 5px;
     }
     .sub{
         font-size: 16px;
     }
 }
 
+.subTitle{
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.normalBtn{
+    background: fn.$subCol;
+    padding: .5em;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 99999px;
+    font-weight: bold;
+    &._copy:after{
+        content: '';
+        background: url("~@/assets/img/ico-copy.svg");
+        display: inline-block;
+        width: 20px;
+        height: 24px;
+        position: relative;
+        top: 5px;
+        left: 5px;
+    }
+}
+
 .menuContents{
     @include fn.innerPadding(0);
+    position: relative;
     &-catchText{
         font-size: 14px;
         line-height: 1.8;
+        margin: fn.$setRowMargin 0;
+    }
+    &-modal{
         margin: fn.$setRowMargin 0;
     }
     &-menuBlock{
@@ -44,6 +76,62 @@ body{
                 width: 100%;
             }
         }
+    }
+}
+
+.formContents{
+    @include fn.innerPadding(20px);
+}
+
+.modal{
+    background: fn.$white;
+    border-radius: 20px;
+    @include fn.innerPadding(1em);
+    position: relative;
+    width: 100%;
+    &_bg{
+        background: rgba($color: #000000, $alpha: .6);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &_wrap{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        @include fn.innerPadding(0);
+    }
+    &_closeBtn{
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        cursor: pointer;
+    }
+    &_detail{
+        margin: 20px 0 30px;
+        &.tel{
+            font-size: 38px;
+            font-weight: bold;
+            text-align: center;
+            @include fn.breakpoint(min){
+                font-size: 34px;
+            }
+        }
+    }
+    .successText{
+        margin-top: 10px;
+        text-align: center;
+        color: fn.$accentCol;
+        font-weight: bold;
     }
 }
 
@@ -110,24 +198,86 @@ body{
     }
 }
 
-/* アニメーション中のスタイル */
-.v-leave-active,
-.v-enter-active {
-    transition: opacity .5s;
+.formList{
+    &_dt{
+        margin-top: 30px;
+        font-size: 14px;
+        .label{
+            display: inline-block;
+            line-height: 1;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: fn.$white;
+            background: #BFBFBF;
+            margin-right: 10px;
+            position: relative;
+            top: -1px;
+            &._required{
+                background: fn.$accentCol;
+            }
+        }
+        &+.formList_dd{
+            margin-top: 15px;
+        }
+    }
+    &_btnWrap{
+        margin-top: 30px;
+    }
 }
 
-/* 表示アニメーション */
-.v-enter {
-    opacity: 0;
-}
-.v-enter-to {
-    opacity: 1;
+.formParts{
+    input[type=text] {
+        padding: .2em 1em;
+        border: 1px solid #BFBFBF;
+        width: 100%;
+        border-radius: 10px;
+        height: 44px;
+    }
+    input[type=radio] {
+        display: none; /* ラジオボタンを非表示にする */
+        & + label {
+            position: relative;
+            right: -8px;
+            top: -13px;
+            &::before{
+                content: '';
+                display: inline-block;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: 2px solid #1591DE;
+                position: relative;
+                top: 13px;
+                left: -8px
+            }
+            & + input + label{
+                margin-left: 32px;
+            }
+        }
+        &:checked+ label{
+            &::after{
+                content: '';
+                position: absolute;
+                left: 0px;
+                top: 4px;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: #1591DE;
+            }
+        }
+    }
+    &_err{
+        margin-top: 10px;
+        color: fn.$accentCol;
+        font-size: 14px;
+    }
 }
 
-/* 非表示アニメーション */
-.v-leave {
-    opacity: 1;
+.v-enter-active, .v-leave-active {
+    transition: opacity 1s
 }
-.v-leave-to {
+
+.v-enter, .v-leave-to{
     opacity: 0;
 }

@@ -1,17 +1,16 @@
 <template>
   <!-- <img alt="Vue logo" src="./assets/img/logo.png"> -->
-  <DefaultHeader msg="あやおり子の連絡帳"></DefaultHeader>
-
+  <DefaultHeader msg="あやおり子の連絡帳"  @onClick="toTop"></DefaultHeader>
   <main class="mainContents">
+      <MainContents v-if="isMenu"  @onClick="getClickData" />
     <transition>
-      <MainContents v-if="selectedContents === 'menu'"  @onClick="getClickData" />
-      </transition>
-    <transition>
-      <FormContents v-if="selectedContents === 'form'"/>
+      <FormContents v-if="!isMenu"/>
       </transition>
   </main>
-
     <DefaultFooter></DefaultFooter>
+    <transition>
+      <ModalContents v-if="isModal"  @onClick="toTop" :setData=selectedContents></ModalContents>
+    </transition>
 </template>
 
 <script>
@@ -19,60 +18,98 @@ import DefaultHeader from './components/Default/header.vue'
 import MainContents from './components/Contents/Menu.vue'
 import FormContents from './components/Contents/Form.vue'
 import DefaultFooter from './components/Default/footer.vue'
-// import liff from '@line/liff'
+import ModalContents from './components/Contents/Modal.vue'
+import liff from '@line/liff'
 export default {
   name: 'App',
   components: {
     DefaultHeader,
     MainContents,
     FormContents,
-    DefaultFooter
+    DefaultFooter,
+    ModalContents
   },
   data() {
     return {
         selectedContents: "menu",
         twitterURL: 'https://twitter.com/ayaoriko',
-        // liffId: "",
-        profile : ''
+        liffId: "1657287384-Ko2w4vXv",
+        profile : '',
+        isMenu: true,
+        isModal: false
     };
   },
-  // mounted() {
-  //   liff.init({
-  //       liffId: this.liffId, // Use own liffId
-  //     })
-  //     .then(() => {
-  //         liff.getProfile()
-  //     })
-
-  // },
   methods: {
-      getClickData(value) {
-          this.selectedContents = value;
-          console.log(this.selectedContents)
-      },
-      // getProfile() {
-      //   liff
-      //   .getProfile()
-      //   .then(
-      //     profile => {
-      //       this.profile = profile
-      //       console.log(this.profile)
-      //     })
-      // }
+    getClickData(value) {
+        this.selectedContents = value;
+        console.log(this.selectedContents)
+        if(this.selectedContents === 'form'){
+            this.isMenu = false
+        }else{
+          this.isModal = true
+        }
+    },
+    modalClose(){
+      this.isModal = false
+      this.selectedContents = "menu"
+    },
+    toTop(){
+      this.isModal = false
+      this.isMenu = true
+      this.selectedContents = "menu"
+    },
+    changeContents() {
+      let selectedContents = this.selectedContents;
+      switch (selectedContents) {
+        case 'tw':
+          window.open(this.twitterURL, '_blank')
+          break;
+        case 'tel':
+          break;
+        case 'mail':
+          this.mailTo()
+          break;
+         case 'line':
+          this.registerLine()
+          break;
+        default:
+          break;
+      }
+      return selectedContents;
+    },
+    registerLine(){
+    liff.init({
+        liffId: this.liffId, // Use own liffId
+      })
+      .then(() => {
+        if (!liff.isLoggedIn()) {
+          liff.login({ redirectUri: "/" });
+          liff.getFriendship().then((data) => {
+            if (data.friendFlag) {
+              console.log("友だちだよ！！")
+            }
+          });
+        }
+      })
+    },
+    mailTo(){
+        // メールに記載したい情報をhiddenタグから取得
+        const bodyData = 'あやおり子へ';
+        const address = '~@co.jp';
+        const ccAddress = 'sub@co.jp';
+        const subject = '件名';
+        const body = bodyData; // 「'%0D%0A'」を入れて改行
+        // 「'?cc='」部分でCC追加
+        const mailURL = 'mailto:' + address + '?cc=' + ccAddress + '&subject=' + subject + '&body=' + body;
+        window.open(mailURL, '_blank')
+    }
   },
   watch: {
     selectedContents: function () {
-      this.changeContents
+      this.changeContents()
     },
   },
   computed:{
-    changeContents: function () {
-      alert(this.selectedContents)
-      // if(this.selectedContents === 'tw'){
-      //   window.open(this.twitterURL, '_blank')
-      // }
-      return this.selectedContents;
-    }
   }
 }
 </script>

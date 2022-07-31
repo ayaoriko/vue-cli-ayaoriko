@@ -4,9 +4,11 @@
 
 $yellow : #FADB5A;
 $orange : #FD9158;
+$red: #F75B2C;
 $white : #fff;
 $mainCol: $yellow;
 $subCol: $orange;
+$accentCol: $red;
 
 $setRowMargin: 20px;
 
@@ -18,6 +20,11 @@ $setRowMargin: 20px;
   @mixin breakpoint($point) {
     @if $point == tablet {
         @media (min-width: 640px) {
+            @content;
+        }
+    }
+    @if $point == min {
+        @media (max-width: 375px) {
             @content;
         }
     }

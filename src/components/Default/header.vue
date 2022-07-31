@@ -1,7 +1,7 @@
 <template>
 <div class="header">
     <div class="inner header-inner">
-        <div class="header-logo">
+        <div class="header-logo" @click="toTop">
             <figure class="logo">
                 <svg id="三角関係" xmlns="http://www.w3.org/2000/svg" width="32" height="32.369" viewBox="0 0 32 32.369">
                 <path id="パス_1" data-name="パス 1" d="M214.761,5.822a2.911,2.911,0,1,0-2.911-2.911A2.91,2.91,0,0,0,214.761,5.822Z" transform="translate(-198.678)" fill="#fff"/>
@@ -24,6 +24,12 @@ export default {
   name: 'DefaultHeader',
   props: {
     msg: String
-  }
+  },
+  methods: {
+    toTop(e){
+      alert('TOP')
+        this.$emit("onClick", e)
+    },
+   }
 }
 </script>
