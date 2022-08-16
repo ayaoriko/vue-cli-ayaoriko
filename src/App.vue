@@ -9,7 +9,7 @@
   </main>
     <DefaultFooter></DefaultFooter>
     <transition>
-      <ModalContents v-if="isModal"  @onClick="toTop" :setData=selectedContents></ModalContents>
+      <ModalContents v-if="isModal"  @onClick="toTop" :setData=selectedContents :isFriend=this.isFriendship></ModalContents>
     </transition>
 </template>
 
@@ -36,8 +36,12 @@ export default {
         liffId: "1657287384-Ko2w4vXv",
         profile : '',
         isMenu: true,
-        isModal: false
+        isModal: false,
+        isFriendship: false,
     };
+  },
+  mounted : function(){
+    liff.init({ liffId:  this.liffId })
   },
   methods: {
     getClickData(value) {
@@ -78,19 +82,23 @@ export default {
       return selectedContents;
     },
     registerLine(){
-    liff.init({
-        liffId: this.liffId, // Use own liffId
-      })
-      .then(() => {
         if (!liff.isLoggedIn()) {
-          liff.login({ redirectUri: "/" });
-          liff.getFriendship().then((data) => {
-            if (data.friendFlag) {
-              console.log("友だちだよ！！")
-            }
+          liff.login();
+        }
+        if(liff.isLoggedIn()){
+          liff.getProfile()
+          .then((profile) => {
+            this.profile = profile;
+            liff.getFriendship().then((data) => {
+              if (data.friendFlag) {
+                this.isFriendship = true;
+              }
+            });
+          })
+          .catch((err) => {
+            console.log("error", err);
           });
         }
-      })
     },
     mailTo(){
         // メールに記載したい情報をhiddenタグから取得
@@ -102,7 +110,7 @@ export default {
         // 「'?cc='」部分でCC追加
         const mailURL = 'mailto:' + address + '?cc=' + ccAddress + '&subject=' + subject + '&body=' + body;
         window.open(mailURL, '_blank')
-    }
+    },
   },
   watch: {
     selectedContents: function () {

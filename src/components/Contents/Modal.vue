@@ -15,7 +15,13 @@
             </div>
         </div>
         <div class="menuContents-modal" v-else-if="setData === 'line'">
-            <p>工事中</p>
+            <div class="modal_detail">
+                <p v-if="isFriend">友だちになってくれてありがとう</p>
+                <p v-else>友だちになってくれなきゃイヤンイヤン</p>
+            </div>
+            <div class="modal_btnWrap">
+                <button  class="normalBtn" v-on:click=" logoutBtn">ログアウト</button>
+            </div>
         </div>
         <div class="menuContents-modal" v-else>
             <p>別タブで開いています。</p>
@@ -35,10 +41,12 @@
 
 
 <script>
+import liff from '@line/liff'
 export default {
   name: 'ModalContents',
   props: {
     setData: String,
+    isFriend: Boolean,
   },
   data() {
     return {
@@ -56,6 +64,14 @@ export default {
         }catch(e){
             this.copyTxt = '失敗しました'
         }
+    },
+    logoutBtn(){
+      if (liff.isLoggedIn()) {
+        liff.logout();
+        alert("ログアウトしました")
+      }else{
+        alert("元からログインしていないんだよ")
+      }
     }
   },
 }
