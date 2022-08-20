@@ -75,6 +75,10 @@ body{
             img{
                 width: 100%;
             }
+            &:hover{
+                transition: .2s ease-out;
+                opacity: .8;
+            }
         }
     }
 }
@@ -130,7 +134,7 @@ body{
     .successText{
         margin-top: 10px;
         text-align: center;
-        color: fn.$accentCol;
+        color: fn.$green;
         font-weight: bold;
     }
 }
@@ -150,6 +154,10 @@ body{
         justify-content: space-between;
         align-items: center;
         cursor: pointer;
+        &:hover{
+            transition: .2s ease-out;
+            opacity: .8;
+        }
     }
     &-text{
         color: fn.$white;
@@ -272,12 +280,21 @@ body{
         color: fn.$accentCol;
         font-size: 14px;
     }
+    &_true{
+        margin-top: 10px;
+        color: fn.$green;
+        font-size: 16px;
+        line-height: 1.5;
+        a{
+            text-decoration: underline;
+        }
+    }
 }
 
 .v-enter-active, .v-leave-active {
-    transition: opacity 1s
-}
+    transition: opacity .5s ease;
+    }
 
-.v-enter, .v-leave-to{
+.v-enter-from, .v-leave-to {
     opacity: 0;
 }

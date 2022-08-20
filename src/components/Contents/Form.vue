@@ -4,9 +4,10 @@
         <h2 class="title">利用者アンケート</h2>
         <span class="sub">appointment</span>
     </div>
+    <div  v-if="complete === 'NG' || complete === ''">
     <div class="menuContents-catchText">
         <p>あやおり子の連絡帳にアクセスしていただいた方に、アンケートを実施しています。</p>
-        <p>アンケートを書いてくださった方から抽選で20名様に、あやおり子から直接お礼の連絡をさせていただきます。</p>
+        <p>アンケートを書いてくださった方には、あやおり子から直接お礼をさせていただきます。</p>
     </div>
     <div class="formWrap">
         <form action="">
@@ -32,16 +33,17 @@
                     <p class="formParts_err">{{errMsg.mail}}</p>
                 </dd>
                 <dt class="formList_dt">
-                    <span class="label _optional">任意</span>
+                    <span class="label _required">必須</span>
                     <span class="text">性別</span>
                 </dt>
                 <dd class="formList_dd">
                     <div class="formParts">
-                        <input type="radio" name="性別" id="sex_man" value="男" checked>
+                        <input type="radio" name="性別" id="sex_man" value="男" v-model="sex">
                         <label for="sex_man">男</label>
-                        <input type="radio" name="性別" id="sex_woman" value="女">
+                        <input type="radio" name="性別" id="sex_woman" value="女" v-model="sex">
                         <label for="sex_woman">女</label>
                     </div>
+                     <p class="formParts_err">{{errMsg.sex}}</p>
                 </dd>
                 <dt class="formList_dt">
                     <span class="label _optional">任意</span>
@@ -78,9 +80,19 @@
                 <button type="button" class="normalBtn" @click="submitBtn">
                     送信する
                 </button>
+                <p v-if="complete === 'NG'" class="formParts_err">未入力の項目があります。</p>
             </div>
         </form>
     </div>
+    </div>
+    <transition>
+    <div v-if="complete === 'OK'" class="formParts_true">
+        <p>
+        回答してくれてありがとうございます！！<br>
+        <a href="#" @click="createJson">appointment.json</a>をダウンロードして、<br>あやおり子に渡してね！
+        </p>
+    </div>
+    </transition>
 </div>
 </template>
 
@@ -96,35 +108,58 @@ export default {
       name: '',
       mail: '',
       code: '',
-      prefectures: '', // 未使用
+      sex: '',
       address1: '',
       address2: '',
+      complete: '',
         errMsg: {
             name: '',
-            code: ''
+            code: '',
+            mail: '',
+            sex: '',
         }
     }
   },
   watch: {
     name: _.debounce(function() {
+        this.checkName()
+    }, 500),
+     mail: _.debounce(function() {
+        this.checkMail()
+    }, 1000),
+    sex: _.debounce(function() {
+        this.checkSex()
+    }, 500),
+    code: _.debounce(function() {
+        this.getAddress()
+    }, 500),
+  },
+   methods: {
+     checkName(){
         if( this.name === ''){
             this.errMsg.name = '入力してください'
-        }else if( this.code === ''){
-            this.getIp()
         }else{
             this.errMsg.name = ''
         }
-    }, 1000),
-    code: _.debounce(function() {
-        this.getAddress()
-        console.log(this.serchcode)
-    }, 500)
-  },
-   methods: {
+    },
+    checkMail(){
+        if (!this.mail.match(/.+@.+\..+/)) {
+            this.errMsg.mail = 'メールアドレスをご確認ください'
+        }else{
+            this.errMsg.mail = ''
+        }
+    },
+    checkSex(){
+        if( this.sex === ''){
+            this.errMsg.sex = '選択してください'
+        }else{
+            this.errMsg.sex = ''
+        }
+    },
     getAddress() {
         this.axios.get('https://zipcloud.ibsnet.co.jp/api/search?zipcode='+this.code)
           .then((response) => {
-            this.address1 = response.data.results[0].address1 + response.data.results[0].address2;
+            this.address1 = response.data.results[0].address1 + response.data.results[0].address2+response.data.results[0].address3;
             this.errMsg.code = ''
           })
           .catch((e) => {
@@ -132,8 +167,33 @@ export default {
             this.errMsg.code = '郵便番号が見つかりませんでした。'
           });
       },
-      submitBtn() {
-        console.log("送信完了")
+    submitBtn() {
+        this.checkName();
+        this.checkMail();
+        this.checkSex();
+        if(this.errMsg.name != '' || this.errMsg.mail != ''  || this.errMsg.sex != ''){
+            this.complete = 'NG';
+        }else{
+            this.complete = 'OK';
+        }
+    },
+    createJson() {
+        let complexData = {
+            name: this.name,
+            mail: this.mail,
+            code: this.code,
+            sex: this.sex,
+            address1: this.address1,
+            address2: this.address2,
+        }
+        const json = JSON.stringify(complexData, null, '  ');
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'appointment.json';
+        link.click();
+        URL.revokeObjectURL(url);
         return false
       }
     }

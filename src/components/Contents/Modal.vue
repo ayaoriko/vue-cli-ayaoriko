@@ -59,7 +59,7 @@ export default {
     },
     copyBtn(){
         try{
-            navigator.clipboard.writeText('コピーされた文章')
+            navigator.clipboard.writeText('090-XXXX-XXXX※コピーされた文章です。')
             this.copyTxt = '成功しました！'
         }catch(e){
             this.copyTxt = '失敗しました'
