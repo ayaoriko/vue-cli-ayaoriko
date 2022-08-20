@@ -1,12 +1,14 @@
 <template>
   <!-- <img alt="Vue logo" src="./assets/img/logo.png"> -->
   <DefaultHeader msg="あやおり子の連絡帳"  @onClick="toTop"></DefaultHeader>
+  <transition>
   <main class="mainContents">
       <MainContents v-if="isMenu"  @onClick="getClickData" />
-    <transition>
-      <FormContents v-if="!isMenu" :lineInfo=profile />
-    </transition>
-  </main>
+      <transition>
+        <FormContents v-if="!isMenu" :lineInfo=profile />
+      </transition>
+    </main>
+  </transition>
     <DefaultFooter></DefaultFooter>
     <transition>
       <ModalContents v-if="isModal"  @onClick="toTop" :setData=selectedContents :isFriend=friendshipData.friendFlag></ModalContents>

@@ -27,7 +27,6 @@ export default {
   },
   methods: {
     toTop(e){
-      alert('TOP')
         this.$emit("onClick", e)
     },
    }
