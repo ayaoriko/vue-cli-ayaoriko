@@ -4,12 +4,12 @@
   <main class="mainContents">
       <MainContents v-if="isMenu"  @onClick="getClickData" />
     <transition>
-      <FormContents v-if="!isMenu"/>
-      </transition>
+      <FormContents v-if="!isMenu" :lineInfo=profile />
+    </transition>
   </main>
     <DefaultFooter></DefaultFooter>
     <transition>
-      <ModalContents v-if="isModal"  @onClick="toTop" :setData=selectedContents :isFriend=this.isFriendship></ModalContents>
+      <ModalContents v-if="isModal"  @onClick="toTop" :setData=selectedContents :isFriend=friendshipData.friendFlag></ModalContents>
     </transition>
 </template>
 
@@ -32,12 +32,12 @@ export default {
   data() {
     return {
         selectedContents: "menu",
-        twitterURL: 'https://twitter.com/ayaoriko',
+        twitterURL: 'https://twitter.com/',
         liffId: "1657287384-Ko2w4vXv",
         profile : '',
         isMenu: true,
         isModal: false,
-        isFriendship: false,
+        friendshipData: ''
     };
   },
   mounted : function(){
@@ -83,16 +83,14 @@ export default {
     },
     registerLine(){
         if (!liff.isLoggedIn()) {
-          liff.login();
+          liff.login()
         }
         if(liff.isLoggedIn()){
           liff.getProfile()
           .then((profile) => {
             this.profile = profile;
             liff.getFriendship().then((data) => {
-              if (data.friendFlag) {
-                this.isFriendship = true;
-              }
+               this.friendshipData = data;
             });
           })
           .catch((err) => {

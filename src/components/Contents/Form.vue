@@ -6,6 +6,7 @@
     </div>
     <div  v-if="complete === 'NG' || complete === ''">
     <div class="menuContents-catchText">
+        <p v-show="this.lineInfo.displayName">{{this.lineInfo.displayName}}さんこんにちは！</p>
         <p>あやおり子の連絡帳にアクセスしていただいた方に、アンケートを実施しています。</p>
         <p>アンケートを書いてくださった方には、あやおり子から直接お礼をさせていただきます。</p>
     </div>
@@ -101,7 +102,8 @@ import _ from 'lodash'
 export default {
   name: 'FormContents',
   props: {
-    msg: String
+    msg: String,
+    lineInfo: String,
   },
   data: function() {
     return {
@@ -185,7 +187,11 @@ export default {
             sex: this.sex,
             address1: this.address1,
             address2: this.address2,
+            lineUseeId:  this.lineInfo.userId,
+            linedisplayName:  this.lineInfo.displayName,
+            linePictureUrl:  this.lineInfo.pictureUrl
         }
+        console.log(complexData)
         const json = JSON.stringify(complexData, null, '  ');
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
