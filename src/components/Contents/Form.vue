@@ -92,6 +92,7 @@
         回答してくれてありがとうございます！！<br>
         <a href="#" @click="createJson">appointment.json</a>をダウンロードして、<br>あやおり子に渡してね！
         </p>
+        <p v-show="isSendLine">{{isSendLine}}</p>
     </div>
     </transition>
 </div>
@@ -99,6 +100,7 @@
 
 <script scoped>
 import _ from 'lodash'
+import liff from '@line/liff'
 export default {
   name: 'FormContents',
   props: {
@@ -114,6 +116,7 @@ export default {
       address1: '',
       address2: '',
       complete: '',
+      isSendLine: false,
         errMsg: {
             name: '',
             code: '',
@@ -160,15 +163,29 @@ export default {
     },
     getAddress() {
         this.axios.get('https://zipcloud.ibsnet.co.jp/api/search?zipcode='+this.code)
-          .then((response) => {
-            this.address1 = response.data.results[0].address1 + response.data.results[0].address2+response.data.results[0].address3;
-            this.errMsg.code = ''
-          })
-          .catch((e) => {
-            console.log(e)
-            this.errMsg.code = '郵便番号が見つかりませんでした。'
-          });
-      },
+        .then((response) => {
+        this.address1 = response.data.results[0].address1 + response.data.results[0].address2+response.data.results[0].address3;
+        this.errMsg.code = ''
+        })
+        .catch((e) => {
+        console.log(e)
+        this.errMsg.code = '郵便番号が見つかりませんでした。'
+        });
+    },
+    sendLineMessage() {
+        if(liff.isInClient()){
+            liff.sendMessages([{
+                type: "text",
+                text: "名前：" + this.name+"\nメールアドレス："+ this.mail+"\n性別："+ this.sex+"\n住所："+this.code+"\n"+this.address1+this.address2,
+            },])
+              .then(() => {
+                this.isSendLine = "LINEからアクセスしてくれた人には、公式LINEから入力した内容が送られます。";
+            })
+            .catch((err) => {
+                this.isSendLine = "公式LINEからメッセージが送れませんでした。エラー内容："+err;
+            });
+        }
+    },
     submitBtn() {
         this.checkName();
         this.checkMail();
@@ -177,14 +194,15 @@ export default {
             this.complete = 'NG';
         }else{
             this.complete = 'OK';
+            this.sendLineMessage()
         }
     },
     createJson() {
         let complexData = {
             name: this.name,
             mail: this.mail,
-            code: this.code,
             sex: this.sex,
+            code: this.code,
             address1: this.address1,
             address2: this.address2,
             lineUseeId:  this.lineInfo.userId,

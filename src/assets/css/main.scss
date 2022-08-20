@@ -188,13 +188,11 @@ body{
     &-title{
         margin-left: 16px;
         font-size: 20px;
-        font-weight: 600;
+        font-weight: 700;
         line-height: 1;
         letter-spacing: 2px;
     }
 }
-
-
 
 .footer{
     background: fn.$mainCol;
@@ -247,6 +245,7 @@ body{
         display: none; /* ラジオボタンを非表示にする */
         & + label {
             position: relative;
+            display: inline-block;
             right: -8px;
             top: -13px;
             &::before{
@@ -269,7 +268,7 @@ body{
                 content: '';
                 position: absolute;
                 left: 0px;
-                top: 4px;
+                top: 21px;
                 width: 20px;
                 height: 20px;
                 border-radius: 50%;

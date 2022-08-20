@@ -19,9 +19,9 @@
                 <p v-if="isFriend">友だちになってくれてありがとう</p>
                 <p v-else>友だちになってくれなきゃイヤンイヤン</p>
             </div>
-            <div class="modal_btnWrap">
+            <!-- <div class="modal_btnWrap">
                 <button  class="normalBtn" v-on:click=" logoutBtn">ログアウト</button>
-            </div>
+            </div> -->
         </div>
         <div class="menuContents-modal" v-else>
             <p>別タブで開いています。</p>
