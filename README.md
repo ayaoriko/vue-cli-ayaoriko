@@ -1,4 +1,8 @@
 # ayaoriko
+[実際に掲載しているサイト](https://liff.line.me/1657287384-Ko2w4vXv)
+[作った背景を書いたブログはこちら](https://liff.line.me/1657287384-Ko2w4vXv)
+
+---
 
 ## Project setup
 ```
