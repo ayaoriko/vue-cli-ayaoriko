@@ -1,4 +1,4 @@
-# ayaoriko
+# 連絡帳アプリ
 
 [実際に掲載しているサイト](https://liff.line.me/1657287384-Ko2w4vXv)
 
